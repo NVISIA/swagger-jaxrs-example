@@ -6,8 +6,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.*;
 
-import io.swagger.annotations.*;
-
 /**
  * Order resource
  * 
@@ -15,19 +13,21 @@ import io.swagger.annotations.*;
  *
  */
 @Path("order")
-@Api(value = "/order", tags = "order")
+@io.swagger.annotations.Api(value = "order")
 public class OrderResource {
 
    @GET
    @Path("{orderId}")
    @Produces(MediaType.APPLICATION_JSON)
-   @ApiOperation(value = "Find order by ID", notes = "Returns one order by ID",
-         response = Order.class)
-   @ApiResponses(
-         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
-               @ApiResponse(code = 404, message = "Order not found for ID") })
-   public Order getOrder(
-         @ApiParam(value = "Order ID to find by") @PathParam("orderId") int orderId) {
+   @io.swagger.annotations.ApiOperation(value = "Find order by ID",
+         notes = "Returns one order by ID", response = Order.class)
+   @io.swagger.annotations.ApiResponses(value = {
+         @io.swagger.annotations.ApiResponse(code = 500,
+               message = "An internal error occurred"),
+         @io.swagger.annotations.ApiResponse(code = 404,
+               message = "Order not found for ID") })
+   public Order getOrder(@io.swagger.annotations.ApiParam(
+         value = "Order ID to find by") @PathParam("orderId") int orderId) {
       OrderService orderService = new DefaultOrderService();
       Order order = null;
       try {
@@ -47,11 +47,13 @@ public class OrderResource {
    @GET
    @Path("/")
    @Produces(MediaType.APPLICATION_JSON)
-   @ApiOperation(value = "Find all orders", notes = "Returns all orders",
-         response = List.class)
-   @ApiResponses(
-         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
-               @ApiResponse(code = 404, message = "Order not found for ID") })
+   @io.swagger.annotations.ApiOperation(value = "Find all orders",
+         notes = "Returns all orders", response = List.class)
+   @io.swagger.annotations.ApiResponses(value = {
+         @io.swagger.annotations.ApiResponse(code = 500,
+               message = "An internal error occurred"),
+         @io.swagger.annotations.ApiResponse(code = 404,
+               message = "Order not found for ID") })
    public List<Order> getOrders() {
       OrderService orderService = new DefaultOrderService();
       List<Order> orders = null;
@@ -73,14 +75,17 @@ public class OrderResource {
    @Path("submitOrder")
    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
    @Produces(MediaType.APPLICATION_JSON)
-   @ApiOperation(value = "Submit an order", notes = "Submits a new order",
-         response = Order.class)
-   @ApiResponses(
-         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
-               @ApiResponse(code = 404, message = "Order not found for ID"),
-               @ApiResponse(code = 400, message = "Invalid order - no order items") })
+   @io.swagger.annotations.ApiOperation(value = "Submit an order",
+         notes = "Submits a new order", response = Order.class)
+   @io.swagger.annotations.ApiResponses(value = {
+         @io.swagger.annotations.ApiResponse(code = 500,
+               message = "An internal error occurred"),
+         @io.swagger.annotations.ApiResponse(code = 404,
+               message = "Order not found for ID"),
+         @io.swagger.annotations.ApiResponse(code = 400,
+               message = "Invalid order - no order items") })
    public Order submitOrder(
-         @ApiParam("Order form with order details") OrderForm orderForm) {
+         @io.swagger.annotations.ApiParam("Order form with order details") OrderForm orderForm) {
       if (orderForm.getOrderItems() == null || orderForm.getOrderItems().isEmpty()) {
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
                .type(MediaType.APPLICATION_JSON).build());

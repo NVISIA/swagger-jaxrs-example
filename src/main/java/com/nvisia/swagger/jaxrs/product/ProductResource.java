@@ -13,17 +13,18 @@ import io.swagger.annotations.*;
  *
  */
 @Path("product")
-@Api(value = "/product", tags = "product")
+@Api(value = "product")
 public class ProductResource {
 
    @GET
    @Path("{productId}")
    @Produces(MediaType.APPLICATION_JSON)
-   @ApiOperation(value = "Find product by ID", notes = "Returns one product by ID",
+   @ApiOperation(value = "Find product by ID", notes = "Returns one productby ID",
          response = Product.class)
    @ApiResponses(
-         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
+         value = { @ApiResponse(code = 500, message = "An internal erroroccurred"),
                @ApiResponse(code = 404, message = "Order not found for ID") })
+
    public Product getProduct(
          @ApiParam("Product ID to find by") @PathParam("productId") int productId) {
       ProductService productService = new DefaultProductService();

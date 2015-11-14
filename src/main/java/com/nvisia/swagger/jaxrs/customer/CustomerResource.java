@@ -13,17 +13,18 @@ import io.swagger.annotations.*;
  *
  */
 @Path("customer")
-@Api(value = "/customer", tags = "customer")
+@Api(value = "customer")
 public class CustomerResource {
 
    @GET
    @Path("{customerId}")
    @Produces(MediaType.APPLICATION_JSON)
-   @ApiOperation(value = "Find customer by ID", notes = "Returns one customer by ID",
+   @ApiOperation(value = "Find customer by ID", notes = "Returns one customerby ID",
          response = Customer.class)
    @ApiResponses(
-         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
+         value = { @ApiResponse(code = 500, message = "An internal erroroccurred"),
                @ApiResponse(code = 404, message = "Customer not found for ID") })
+
    public Customer getCustomer(@ApiParam(
          value = "Customer ID to find by") @PathParam("customerId") int customerId) {
       CustomerService customerService = new DefaultCustomerService();
