@@ -6,6 +6,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.*;
 
+import io.swagger.annotations.*;
+
 /**
  * Order resource
  * 
@@ -13,12 +15,19 @@ import javax.ws.rs.core.Response.*;
  *
  */
 @Path("order")
+@Api(value = "/order", tags = "order")
 public class OrderResource {
 
    @GET
    @Path("{orderId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public Order getOrder(@PathParam("orderId") int orderId) {
+   @ApiOperation(value = "Find order by ID", notes = "Returns one order by ID",
+         response = Order.class)
+   @ApiResponses(
+         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
+               @ApiResponse(code = 404, message = "Order not found for ID") })
+   public Order getOrder(
+         @ApiParam(value = "Order ID to find by") @PathParam("orderId") int orderId) {
       OrderService orderService = new DefaultOrderService();
       Order order = null;
       try {
@@ -28,8 +37,8 @@ public class OrderResource {
                .type(MediaType.APPLICATION_JSON).build());
       }
       if (order == null) {
-         throw new WebApplicationException(
-               Response.status(Status.NOT_FOUND).type(MediaType.APPLICATION_JSON).build());
+         throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+               .type(MediaType.APPLICATION_JSON).build());
       }
 
       return order;
@@ -38,6 +47,11 @@ public class OrderResource {
    @GET
    @Path("/")
    @Produces(MediaType.APPLICATION_JSON)
+   @ApiOperation(value = "Find all orders", notes = "Returns all orders",
+         response = List.class)
+   @ApiResponses(
+         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
+               @ApiResponse(code = 404, message = "Order not found for ID") })
    public List<Order> getOrders() {
       OrderService orderService = new DefaultOrderService();
       List<Order> orders = null;
@@ -48,8 +62,8 @@ public class OrderResource {
                .type(MediaType.APPLICATION_JSON).build());
       }
       if (orders == null) {
-         throw new WebApplicationException(
-               Response.status(Status.NOT_FOUND).type(MediaType.APPLICATION_JSON).build());
+         throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+               .type(MediaType.APPLICATION_JSON).build());
       }
 
       return orders;
@@ -59,28 +73,35 @@ public class OrderResource {
    @Path("submitOrder")
    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
    @Produces(MediaType.APPLICATION_JSON)
-   public Integer submitOrder(OrderForm orderForm) {
+   @ApiOperation(value = "Submit an order", notes = "Submits a new order",
+         response = Order.class)
+   @ApiResponses(
+         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
+               @ApiResponse(code = 404, message = "Order not found for ID"),
+               @ApiResponse(code = 400, message = "Invalid order - no order items") })
+   public Order submitOrder(
+         @ApiParam("Order form with order details") OrderForm orderForm) {
       if (orderForm.getOrderItems() == null || orderForm.getOrderItems().isEmpty()) {
-         throw new WebApplicationException(
-               Response.status(Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON).build());
+         throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+               .type(MediaType.APPLICATION_JSON).build());
       }
 
       OrderService orderService = new DefaultOrderService();
       Order order = null;
       try {
-         order = orderService.submitOrder(orderForm.getCustomerId(), orderForm.getOrderItems(),
-               new Date(System.currentTimeMillis()));
+         order = orderService.submitOrder(orderForm.getCustomerId(),
+               orderForm.getOrderItems(), new Date(System.currentTimeMillis()));
       } catch (Exception e) {
          throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
                .type(MediaType.APPLICATION_JSON).build());
       }
 
       if (order == null) {
-         throw new WebApplicationException(
-               Response.status(Status.NOT_FOUND).type(MediaType.APPLICATION_JSON).build());
+         throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+               .type(MediaType.APPLICATION_JSON).build());
       }
 
-      return order.getOrderId();
+      return order;
    }
 
 }

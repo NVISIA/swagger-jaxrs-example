@@ -4,6 +4,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.*;
 
+import io.swagger.annotations.*;
+
 /**
  * Product resource
  * 
@@ -11,12 +13,19 @@ import javax.ws.rs.core.Response.*;
  *
  */
 @Path("product")
+@Api(value = "/product", tags = "product")
 public class ProductResource {
 
    @GET
    @Path("{productId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public Product getProduct(@PathParam("productId") int productId) {
+   @ApiOperation(value = "Find product by ID", notes = "Returns one product by ID",
+         response = Product.class)
+   @ApiResponses(
+         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
+               @ApiResponse(code = 404, message = "Order not found for ID") })
+   public Product getProduct(
+         @ApiParam("Product ID to find by") @PathParam("productId") int productId) {
       ProductService productService = new DefaultProductService();
       Product product = null;
       try {

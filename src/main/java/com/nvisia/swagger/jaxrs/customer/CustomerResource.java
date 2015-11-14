@@ -4,6 +4,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.*;
 
+import io.swagger.annotations.*;
+
 /**
  * Customer resource
  * 
@@ -11,12 +13,19 @@ import javax.ws.rs.core.Response.*;
  *
  */
 @Path("customer")
+@Api(value = "/customer", tags = "customer")
 public class CustomerResource {
 
    @GET
    @Path("{customerId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public Customer getCustomer(@PathParam("customerId") int customerId) {
+   @ApiOperation(value = "Find customer by ID", notes = "Returns one customer by ID",
+         response = Customer.class)
+   @ApiResponses(
+         value = { @ApiResponse(code = 500, message = "An internal error occurred"),
+               @ApiResponse(code = 404, message = "Customer not found for ID") })
+   public Customer getCustomer(@ApiParam(
+         value = "Customer ID to find by") @PathParam("customerId") int customerId) {
       CustomerService customerService = new DefaultCustomerService();
       Customer customer = null;
       try {
